@@ -30,6 +30,6 @@ jobs:
       run: |
         git config user.name "GitHub Action"
         git config user.email "noreply@example.com"
-        git add ./path/to/state.txt
+        git add ./state.txt
         git commit -m "Update state.txt"
         git push
