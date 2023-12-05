@@ -26,7 +26,13 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       run: |
         python action.py
+    - name: Check if state.txt was updated
+      id: check_state
+      run: |
+        git diff --quiet --exit-code -- ./state.txt
+        echo "::set-output name=updated::$?"
     - name: Commit and push state file
+      if: steps.check_state.outputs.updated == '1'
       run: |
         git config user.name "GitHub Action"
         git config user.email "noreply@example.com"
