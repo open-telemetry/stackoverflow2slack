@@ -28,6 +28,7 @@ jobs:
         python action.py
     - name: Check if state.txt was updated
       id: check_state
+      continue-on-error: true
       run: |
         git diff --quiet --exit-code -- ./state.txt
         echo "::set-output name=updated::$?"
