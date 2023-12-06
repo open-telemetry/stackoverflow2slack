@@ -5,7 +5,7 @@ from datetime import datetime
 
 STACK_OVERFLOW_API = "https://api.stackexchange.com/2.3/search"
 SLACK_WEBHOOK_URL = os.environ['SLACK_WEBHOOK_URL']
-STATE_FILE = "last.txt"
+STATE_FILE = "state.txt"
 
 def get_latest_question_timestamp():
     try:
