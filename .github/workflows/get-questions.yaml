@@ -1,6 +1,7 @@
 name: Fetch and Post StackOverflow Questions
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 * * * *"
 
