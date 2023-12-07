@@ -1,11 +1,15 @@
 import os
 import json
 import requests
+import logging
 from datetime import datetime
 
 STACK_OVERFLOW_API = "https://api.stackexchange.com/2.3/search"
-SLACK_WEBHOOK_URL = os.environ['SLACK_WEBHOOK_URL']
+SLACK_WEBHOOK_URL = os.environ.get('SLACK_WEBHOOK_URL')
 STATE_FILE = "state.txt"
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_latest_question_timestamp():
     try:
@@ -72,21 +76,30 @@ def format_question(question):
     return message
 
 def post_to_slack(message):
-    headers = {"Content-Type": "application/json"}
-    data = {"text": message['text'], "blocks": message['blocks']}
-    response = requests.post(SLACK_WEBHOOK_URL, headers=headers, data=json.dumps(data))
-    response.raise_for_status()
+    if SLACK_WEBHOOK_URL:
+        headers = {"Content-Type": "application/json"}
+        data = {"text": message['text'], "blocks": message['blocks']}
+        response = requests.post(SLACK_WEBHOOK_URL, headers=headers, data=json.dumps(data))
+        response.raise_for_status()
+    else:
+        logging.info("SLACK_WEBHOOK_URL is not set. Logging the results instead.")
+        logging.info(f"Message: {message}")
 
 def main():
     latest_timestamp = get_latest_question_timestamp()
+    logging.info(f"Latest question timestamp: {latest_timestamp}")
     questions = fetch_questions(latest_timestamp)
+    logging.info(f"Fetched {len(questions)} questions from Stack Overflow")
 
     for question in questions:
         message = format_question(question)
+        logging.info(f"Formatting question: {question['title']}")
         post_to_slack(message)
+        logging.info(f"Posted question to Slack: {question['title']}")
         latest_timestamp = max(latest_timestamp, question['creation_date'])
 
     update_latest_question_timestamp(latest_timestamp)
+    logging.info(f"Updated latest question timestamp: {latest_timestamp}")
 
 if __name__ == "__main__":
     main()

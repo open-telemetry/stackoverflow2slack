@@ -11,24 +11,24 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: '3.8'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Cache state
-        uses: actions/cache@v2
+      - name: Restore statefile cache
+        uses: actions/cache/restore@v3
+        id: restore_cache
         with:
           path: state.txt
-          key: state-${{ hashFiles('state.txt') }}
-          restore-keys: state-
+          key: state
 
       - name: Fetch and post questions
         env:
@@ -36,9 +36,10 @@ jobs:
         run: |
           python action.py
 
-      - name: Cache state
-        uses: actions/cache@v2
+      - name: Save statefile cache
+        uses: actions/cache/save@v3
+        if: always()
+        id: save_cache
         with:
           path: state.txt
-          key: state-${{ hashFiles('state.txt') }}
-          restore-keys: state-
+          key: state
