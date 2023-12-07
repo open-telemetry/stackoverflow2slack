@@ -35,7 +35,11 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          python action.py
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL secret is not set. Skipping the action."
+          else
+            python action.py
+          fi
 
       - name: Save statefile cache
         uses: actions/cache/save@v3
