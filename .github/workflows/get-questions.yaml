@@ -28,7 +28,8 @@ jobs:
         id: restore_cache
         with:
           path: state.txt
-          key: state
+          key: state-
+          restore-keys: state-
 
       - name: Fetch and post questions
         env:
@@ -42,4 +43,4 @@ jobs:
         id: save_cache
         with:
           path: state.txt
-          key: state
+          key: state-${{ github.run_id }}
