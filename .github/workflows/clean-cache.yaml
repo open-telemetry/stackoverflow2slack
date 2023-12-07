@@ -21,7 +21,8 @@ jobs:
 
           echo "Deleting old cache keys..."
           for cacheKey in $cacheKeys; do
-            gh actions-cache delete -R $REPO -k $cacheKey --confirm
+            echo "Deleting $cacheKey..."
+            gh actions-cache delete $cacheKey -R $REPO --confirm
           done
           echo "Done!"
         env:
