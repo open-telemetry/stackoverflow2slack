@@ -25,7 +25,7 @@ def update_latest_question_timestamp(latest_timestamp):
 
 def fetch_questions(latest_timestamp):
     params = {
-        "tagged": "open-telemetry",
+        "tagged": "open-telemetry;otel",
         "sort": "creation",
         "site": "stackoverflow"
     }
